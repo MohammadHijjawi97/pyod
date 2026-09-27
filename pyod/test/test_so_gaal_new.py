@@ -5,6 +5,8 @@ import os
 import sys
 import unittest
 
+from sklearn.base import clone
+
 # temporary solution for relative imports in case pyod is not installed
 # if pyod is installed, no need to use the following line
 sys.path.append(
@@ -127,6 +129,17 @@ class TestSO_GAAL(unittest.TestCase):
                                    scoring='prc_n_score')
         self.assertRaises(NotImplementedError, self.clf.fit_predict_score,
                           self.X_test, self.y_test, scoring='something')
+
+    def test_clone(self):
+        # criterion_name used to be resolved into self.criterion without
+        # being stored, so get_params() reported None and clone() failed
+        # with "Invalid criterion name."
+        clf = SO_GAAL(criterion_name='mse')
+        self.assertEqual(clf.get_params()['criterion_name'], 'mse')
+        cloned = clone(clf)
+        self.assertEqual(cloned.get_params()['criterion_name'], 'mse')
+        self.assertEqual(clone(self.clf).get_params()['criterion_name'],
+                         'bce')
 
     def tearDown(self):
         pass

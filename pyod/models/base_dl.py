@@ -118,6 +118,8 @@ class BaseDeepLearningDetector(BaseDetector):
         self.epoch_num = epoch_num
         self.batch_size = batch_size
         self.optimizer_name = optimizer_name
+        self.loss_func = loss_func
+        self.criterion_name = criterion_name
         self.device = device
         self.random_state = random_state
         self.use_compile = use_compile
